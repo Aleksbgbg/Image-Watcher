@@ -9,27 +9,39 @@
 
     internal class Project
     {
-        private readonly ResourceDictionary _imageDictionary;
-
-        private readonly XmlWriter _imagesWriter;
+        private readonly ResourceDictionary _imageDictionary = new ResourceDictionary();
 
         internal Project(string directory)
         {
-            _imagesWriter = XmlWriter.Create(Path.Combine(directory, "Themes", "Images.xaml"));
+            XmlWriter imagesWriter = XmlWriter.Create(Path.Combine(directory, "Themes", "Images.xaml"));
 
             void SaveImageDictionary()
             {
-                XamlWriter.Save(_imageDictionary, _imagesWriter);
+                XamlWriter.Save(_imageDictionary, imagesWriter);
             }
 
-            FileSystemWatcher projectWatcher = new FileSystemWatcher(Path.Combine(directory, "Images")) { EnableRaisingEvents = true };
-
-            projectWatcher.Created += (sender, e) =>
+            void AddNewImage(string fullpath)
             {
-                string filename = Path.GetFileName(e.FullPath);
+                string filename = Path.GetFileName(fullpath);
 
                 _imageDictionary.Add(Path.GetFileNameWithoutExtension(filename),
                                      new BitmapImage(new Uri($"/Images/{filename}")));
+            }
+
+            string imagesDirectory = Path.Combine(directory, "Images");
+
+            foreach (string image in Directory.GetFiles(imagesDirectory))
+            {
+                AddNewImage(image);
+            }
+
+            SaveImageDictionary();
+
+            FileSystemWatcher projectWatcher = new FileSystemWatcher(imagesDirectory) { EnableRaisingEvents = true };
+
+            projectWatcher.Created += (sender, e) =>
+            {
+                AddNewImage(e.FullPath);
 
                 SaveImageDictionary();
             };
