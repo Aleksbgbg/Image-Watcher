@@ -48,6 +48,7 @@
     <Compile Include="Core\FileSystem\Project.cs" />
     <Compile Include="Core\FileSystem\Solution.cs" />
     <Compile Include="Core\Logger.cs" />
+    <Compile Include="Core\Models\Image.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
