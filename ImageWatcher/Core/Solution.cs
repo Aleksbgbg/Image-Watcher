@@ -9,15 +9,12 @@
 
         internal Solution(string path)
         {
-            _projects = Directory.GetDirectories(path).Where(directory =>
-            {
-                string[] subDirectories = Directory.GetDirectories(directory);
-
-                return Directory.GetFiles(directory).Any(file => Path.GetExtension(file) == ".csproj") &&
-                       subDirectories.Contains("Images") &&
-                       subDirectories.Contains("Themes") &&
-                       File.Exists(Path.Combine(directory, "Themes", "Images.xaml"));
-            }).Select(directory => new Project(directory)).ToArray();
+            _projects = Directory.GetDirectories(path)
+                                 .Where(directory => File.Exists(Path.Combine(directory, $"{Path.GetFileName(directory)}.csproj")) &&
+                                                     Directory.Exists(Path.Combine(directory, "Images")) &&
+                                                     File.Exists(Path.Combine(directory, "Themes", "Images.xaml")))
+                                 .Select(directory => new Project(directory))
+                                 .ToArray();
         }
     }
 }
