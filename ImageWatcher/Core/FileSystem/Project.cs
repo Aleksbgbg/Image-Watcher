@@ -3,16 +3,23 @@
     using System;
     using System.IO;
     using System.Windows;
+    using System.Windows.Markup;
     using System.Windows.Media.Imaging;
+    using System.Xml;
 
     internal class Project
     {
         private readonly ResourceDictionary _imageDictionary;
 
+        private readonly XmlWriter _imagesWriter;
+
         internal Project(string directory)
         {
+            _imagesWriter = XmlWriter.Create(Path.Combine(directory, "Themes", "Images.xaml"));
+
             void SaveImageDictionary()
             {
+                XamlWriter.Save(_imageDictionary, _imagesWriter);
             }
 
             FileSystemWatcher projectWatcher = new FileSystemWatcher(Path.Combine(directory, "Images")) { EnableRaisingEvents = true };
