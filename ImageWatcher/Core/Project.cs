@@ -1,9 +1,20 @@
 ﻿namespace ImageWatcher.Core
 {
+    using System.IO;
+
     internal class Project
     {
-        public Project(string directory)
+        internal Project(string directory)
         {
+            void OnImagesModified()
+            {
+            }
+
+            FileSystemWatcher projectWatcher = new FileSystemWatcher(Path.Combine(directory, "Images")) { EnableRaisingEvents = true };
+
+            projectWatcher.Created += (sender, e) => OnImagesModified();
+            projectWatcher.Deleted += (sender, e) => OnImagesModified();
+            projectWatcher.Renamed += (sender, e) => OnImagesModified();
         }
     }
 }
