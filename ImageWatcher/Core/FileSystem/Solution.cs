@@ -1,4 +1,4 @@
-﻿namespace ImageWatcher.Core
+﻿namespace ImageWatcher.Core.FileSystem
 {
     using System.IO;
     using System.Linq;
