@@ -1,31 +1,20 @@
 ﻿namespace ImageWatcher.Core.Models
 {
-    using System.IO;
-
     internal class Image
     {
-        private string _resourceString;
-
-        internal Image(string filepath)
+        internal Image(string key, string filename)
         {
-            GenerateResourceString(filepath);
+            Key = key;
+            Filename = filename;
         }
+
+        internal string Key { get; set; }
+
+        internal string Filename { get; set; }
 
         public override string ToString()
         {
-            return _resourceString;
-        }
-
-        internal void Rename(string newpath)
-        {
-            GenerateResourceString(newpath);
-        }
-
-        private void GenerateResourceString(string filepath)
-        {
-            string filename = Path.GetFileName(filepath);
-
-            _resourceString = $"<BitmapImage x:Key=\"{Path.GetFileNameWithoutExtension(filename)}\" UriSource=\"/Images/{filename}\"/>";
+            return $"<BitmapImage x:Key=\"{Key}\" UriSource=\"/Images/{Filename}\"/>";
         }
     }
 }
