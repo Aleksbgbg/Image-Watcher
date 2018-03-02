@@ -79,7 +79,7 @@
 
                 SaveImageDictionary();
 
-                Logger.Log(_solutionName, _name, $"Renamed image: '{oldFilename}' -> '{newFilename}");
+                Logger.Log(_solutionName, _name, $"Renamed image: '{oldFilename}' -> '{newFilename}'");
             };
 
             Logger.Log($"Registered /{_solutionName}/{_name}");

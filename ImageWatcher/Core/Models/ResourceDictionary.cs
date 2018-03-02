@@ -16,8 +16,8 @@
         {
             File.WriteAllText(_path, $@"<ResourceDictionary xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
                     xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
-\t{string.Join("\n\t", Values)}
-</ResourceDictionary>".Replace("\n", "\r\n"));
+    {string.Join("\r\n\t", Values)}
+</ResourceDictionary>");
         }
     }
 }
