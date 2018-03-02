@@ -14,9 +14,7 @@
             _name = Path.GetFileName(path);
 
             _projects = Directory.GetDirectories(path)
-                                 .Where(directory => File.Exists(Path.Combine(directory, $"{Path.GetFileName(directory)}.csproj")) &&
-                                                     Directory.Exists(Path.Combine(directory, "Images")) &&
-                                                     File.Exists(Path.Combine(directory, "Themes", "Images.xaml")))
+                                 .Where(Project.IsValid)
                                  .Select(directory => new Project(_name, directory))
                                  .ToArray();
         }

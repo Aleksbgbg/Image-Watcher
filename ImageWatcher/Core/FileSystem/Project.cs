@@ -32,6 +32,13 @@
             GC.SuppressFinalize(this);
         }
 
+        internal static bool IsValid(string directory)
+        {
+            return File.Exists(Path.Combine(directory, $"{Path.GetFileName(directory)}.csproj")) &&
+                   Directory.Exists(Path.Combine(directory, "Images")) &&
+                   File.Exists(Path.Combine(directory, "Themes", "Images.xaml"));
+        }
+
         internal void Unregister()
         {
             Logger.Log($"Unregistered /{_solutionName}/{_name}");
