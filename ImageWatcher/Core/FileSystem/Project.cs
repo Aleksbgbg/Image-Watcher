@@ -1,8 +1,9 @@
 ﻿namespace ImageWatcher.Core.FileSystem
 {
+    using System;
     using System.IO;
 
-    internal class Project
+    internal class Project : IDisposable
     {
         private readonly string _solutionName;
 
@@ -18,6 +19,25 @@
             _imageFolderWatcher = new ImageFolderWatcher(_solutionName, _name, directory);
 
             Logger.Log($"Registered /{_solutionName}/{_name}");
+        }
+
+        ~Project()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _imageFolderWatcher.Dispose();
+            }
         }
     }
 }
