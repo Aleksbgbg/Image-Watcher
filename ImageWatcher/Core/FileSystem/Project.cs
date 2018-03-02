@@ -2,10 +2,8 @@
 {
     using System;
     using System.IO;
-    using System.Windows;
-    using System.Windows.Markup;
-    using System.Windows.Media.Imaging;
-    using System.Xml;
+
+    using ImageWatcher.Core.Models;
 
     internal class Project
     {
@@ -20,11 +18,9 @@
             _solutionName = solutionName;
             _name = Path.GetFileName(directory);
 
-            XmlWriter imagesWriter = XmlWriter.Create(Path.Combine(directory, "Themes", "Images.xaml"));
-
             void SaveImageDictionary()
             {
-                XamlWriter.Save(_imageDictionary, imagesWriter);
+                // XamlWriter.Save(_imageDictionary, new FileStream(Path.Combine(directory, "Themes", "Images.xaml"), FileMode.Open));
             }
 
             void AddNewImage(string fullpath)
@@ -45,7 +41,7 @@
             SaveImageDictionary();
 
             FileSystemWatcher projectWatcher = new FileSystemWatcher(imagesDirectory) { EnableRaisingEvents = true };
-
+            
             projectWatcher.Created += (sender, e) =>
             {
                 string filename = Path.GetFileName(e.FullPath);
