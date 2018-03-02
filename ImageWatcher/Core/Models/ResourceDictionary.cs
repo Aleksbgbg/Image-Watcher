@@ -1,6 +1,23 @@
 ﻿namespace ImageWatcher.Core.Models
 {
-    internal class ResourceDictionary
+    using System.Collections.Generic;
+    using System.IO;
+
+    internal class ResourceDictionary : SortedDictionary<string, Image>
     {
+        private readonly string _path;
+
+        internal ResourceDictionary(string path)
+        {
+            _path = path;
+        }
+
+        internal void Save()
+        {
+            File.WriteAllText(_path, $@"<ResourceDictionary xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+                    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
+\t{string.Join("\n\t", Values)}
+</ResourceDictionary>".Replace("\n", "\r\n"));
+        }
     }
 }
