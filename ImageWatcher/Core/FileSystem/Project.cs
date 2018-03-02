@@ -32,6 +32,12 @@
             GC.SuppressFinalize(this);
         }
 
+        internal void Unregister()
+        {
+            Logger.Log($"Unregistered /{_solutionName}/{_name}");
+            Dispose();
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
