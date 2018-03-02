@@ -1,16 +1,19 @@
 ﻿namespace ImageWatcher.Core
 {
+    using System;
     using System.IO;
 
     using ImageWatcher.Core.Models;
 
-    internal class ImageFolderWatcher
+    internal sealed class ImageFolderWatcher : IDisposable
     {
         private readonly string _solutionName;
 
         private readonly string _projectName;
 
         private readonly ResourceDictionary _imageDictionary;
+
+        private readonly FileSystemWatcher _projectWatcher;
 
         internal ImageFolderWatcher(string solutionName, string projectName, string directory)
         {
@@ -40,9 +43,9 @@
 
             SaveImageDictionary();
 
-            FileSystemWatcher projectWatcher = new FileSystemWatcher(imagesDirectory) { EnableRaisingEvents = true };
+            _projectWatcher = new FileSystemWatcher(imagesDirectory) { EnableRaisingEvents = true };
 
-            projectWatcher.Created += (sender, e) =>
+            _projectWatcher.Created += (sender, e) =>
             {
                 string filename = Path.GetFileName(e.FullPath);
 
@@ -52,7 +55,7 @@
 
                 Logger.Log(_solutionName, _projectName, $"Added image: '{filename}'");
             };
-            projectWatcher.Deleted += (sender, e) =>
+            _projectWatcher.Deleted += (sender, e) =>
             {
                 string filename = Path.GetFileName(e.FullPath);
 
@@ -62,7 +65,7 @@
 
                 Logger.Log(_solutionName, _projectName, $"Deleted image: '{filename}'");
             };
-            projectWatcher.Renamed += (sender, e) =>
+            _projectWatcher.Renamed += (sender, e) =>
             {
                 string oldFilename = Path.GetFileName(e.OldFullPath);
                 string oldFilenameWithoutExtension = Path.GetFileNameWithoutExtension(oldFilename);
@@ -80,6 +83,25 @@
 
                 Logger.Log(_solutionName, _projectName, $"Renamed image: '{oldFilename}' -> '{newFilename}'");
             };
+        }
+
+        ~ImageFolderWatcher()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _projectWatcher.Dispose();
+            }
         }
     }
 }
