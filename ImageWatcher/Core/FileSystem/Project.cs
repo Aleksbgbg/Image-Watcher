@@ -1,6 +1,5 @@
 ﻿namespace ImageWatcher.Core.FileSystem
 {
-    using System;
     using System.IO;
 
     using ImageWatcher.Core.Models;
@@ -11,24 +10,26 @@
 
         private readonly string _name;
 
-        private readonly ResourceDictionary _imageDictionary = new ResourceDictionary();
+        private readonly ResourceDictionary _imageDictionary;
 
         internal Project(string solutionName, string directory)
         {
             _solutionName = solutionName;
             _name = Path.GetFileName(directory);
+            _imageDictionary = new ResourceDictionary(Path.Combine(directory, "Themes", "Images.xaml"));
 
             void SaveImageDictionary()
             {
-                // XamlWriter.Save(_imageDictionary, new FileStream(Path.Combine(directory, "Themes", "Images.xaml"), FileMode.Open));
+                _imageDictionary.Save();
             }
 
             void AddNewImage(string fullpath)
             {
                 string filename = Path.GetFileName(fullpath);
+                string key = Path.GetFileNameWithoutExtension(filename);
 
-                _imageDictionary.Add(Path.GetFileNameWithoutExtension(filename),
-                                     new BitmapImage(new Uri($"/Images/{filename}", UriKind.Relative)));
+                _imageDictionary.Add(key,
+                                     new Image(key, filename));
             }
 
             string imagesDirectory = Path.Combine(directory, "Images");
@@ -41,7 +42,7 @@
             SaveImageDictionary();
 
             FileSystemWatcher projectWatcher = new FileSystemWatcher(imagesDirectory) { EnableRaisingEvents = true };
-            
+
             projectWatcher.Created += (sender, e) =>
             {
                 string filename = Path.GetFileName(e.FullPath);
@@ -67,12 +68,14 @@
                 string oldFilename = Path.GetFileName(e.OldFullPath);
                 string oldFilenameWithoutExtension = Path.GetFileNameWithoutExtension(oldFilename);
                 string newFilename = Path.GetFileName(e.FullPath);
+                string newFilenameWithoutExtension = Path.GetFileNameWithoutExtension(newFilename);
 
-                BitmapImage image = (BitmapImage)_imageDictionary[oldFilenameWithoutExtension];
-                image.UriSource = new Uri($"/Images/{newFilename}", UriKind.Relative);
+                Image image = _imageDictionary[oldFilenameWithoutExtension];
+                image.Key = newFilenameWithoutExtension;
+                image.Filename = newFilename;
 
                 _imageDictionary.Remove(oldFilenameWithoutExtension);
-                _imageDictionary.Add(Path.GetFileNameWithoutExtension(newFilename), image);
+                _imageDictionary.Add(newFilenameWithoutExtension, image);
 
                 SaveImageDictionary();
 
