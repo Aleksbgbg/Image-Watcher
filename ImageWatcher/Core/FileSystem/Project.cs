@@ -3,6 +3,8 @@
     using System;
     using System.IO;
 
+    using IODirectory = System.IO.Directory;
+
     internal class Project : IDisposable
     {
         private readonly string _solutionName;
@@ -20,6 +22,8 @@
             _solutionName = solutionName;
             _name = Path.GetFileName(directory);
             _imageFolderWatcher = new ImageFolderWatcher(_solutionName, _name, directory);
+
+            Directory = directory;
 
             _folderValidityWatcher = new FileSystemWatcher(directory) { EnableRaisingEvents = true };
             _themesValidityWatcher = new FileSystemWatcher(Path.Combine(directory, "Themes"), "Images.xaml") { EnableRaisingEvents = true };
@@ -58,6 +62,8 @@
 
         internal event EventHandler Unregistered;
 
+        internal string Directory { get; }
+
         public void Dispose()
         {
             Dispose(true);
@@ -67,7 +73,7 @@
         internal static bool IsValid(string directory)
         {
             return File.Exists(Path.Combine(directory, $"{Path.GetFileName(directory)}.csproj")) &&
-                   Directory.Exists(Path.Combine(directory, "Images")) &&
+                   IODirectory.Exists(Path.Combine(directory, "Images")) &&
                    File.Exists(Path.Combine(directory, "Themes", "Images.xaml"));
         }
 
