@@ -8,7 +8,13 @@
             Filename = filename;
         }
 
-        internal string Key { get; set; }
+        private string _key;
+        internal string Key
+        {
+            get => _key;
+
+            set => _key = value.Replace(" ", string.Empty);
+        }
 
         internal string Filename { get; set; }
 
