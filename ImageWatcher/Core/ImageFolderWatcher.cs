@@ -28,6 +28,10 @@
 
             void AddNewImage(string fullpath)
             {
+                // Do not include 'Icon.ico' files, as these are not used in project
+                // Consider adding a rules file to make this flexible
+                if (Path.GetFileName(fullpath) == "Icon.ico") return;
+
                 string filename = Path.GetFileName(fullpath);
                 string key = Path.GetFileNameWithoutExtension(filename);
 
