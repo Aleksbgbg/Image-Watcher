@@ -7,19 +7,17 @@
 
     internal class Solution : IDisposable
     {
-        private readonly string _name;
-
         private readonly FileSystemWatcher _solutionWatcher;
 
         private readonly List<Project> _projects;
 
         internal Solution(string path)
         {
-            _name = Path.GetFileName(path);
+            Name = Path.GetFileName(path);
 
             _projects = Directory.GetDirectories(path)
                                  .Where(Project.IsValid)
-                                 .Select(directory => new Project(_name, directory))
+                                 .Select(directory => new Project(Name, directory))
                                  .ToList();
 
             _solutionWatcher = new FileSystemWatcher(path) { EnableRaisingEvents = true };
@@ -28,12 +26,12 @@
             {
                 if (Directory.Exists(e.FullPath) && Project.IsValid(e.FullPath))
                 {
-                    _projects.Add(new Project(_name, e.FullPath));
+                    _projects.Add(new Project(Name, e.FullPath));
                 }
             };
             _solutionWatcher.Deleted += (sender, e) =>
             {
-                if (Path.GetFileName(e.FullPath) == $"{_name}.sln")
+                if (Path.GetFileName(e.FullPath) == $"{Name}.sln")
                 {
                     Dispose();
                     return;
@@ -53,10 +51,17 @@
             Dispose(false);
         }
 
+        internal string Name { get; }
+
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        internal static bool IsValid(string path)
+        {
+            return File.Exists(Path.Combine(path, $"{Path.GetFileName(path)}.sln"));
         }
 
         protected virtual void Dispose(bool disposing)
@@ -69,6 +74,8 @@
             {
                 project.Unregister();
             }
+
+            _projects.Clear();
         }
     }
 }

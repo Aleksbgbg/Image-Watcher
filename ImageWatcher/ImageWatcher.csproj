@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\FileSystem\Project.cs" />
+    <Compile Include="Core\FileSystem\RootDirectoryManager.cs" />
     <Compile Include="Core\FileSystem\Solution.cs" />
     <Compile Include="Core\ImageFolderWatcher.cs" />
     <Compile Include="Core\Logger.cs" />
