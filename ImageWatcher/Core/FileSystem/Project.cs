@@ -60,8 +60,6 @@
             Dispose(false);
         }
 
-        internal event EventHandler Unregistered;
-
         internal string Directory { get; }
 
         public void Dispose()
@@ -81,7 +79,6 @@
         {
             Logger.Log($"Unregistered /{_solutionName}/{_name}");
             Dispose();
-            Unregistered?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void Dispose(bool disposing)
